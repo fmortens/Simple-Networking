@@ -2,10 +2,10 @@ import { observable, action, computed, toJS } from 'mobx';
 import * as firebase from 'firebase';
 import config from '../config';
 
-export default class Authentication {
+class Authentication {
   @observable user;
   @observable loggedIn = false;
-  @observable status;
+  @observable status = 'busy';
 
   constructor(props) {
     firebase.initializeApp(config.firebase);
@@ -14,7 +14,7 @@ export default class Authentication {
 
   @action
   login(credentials) {
-    this.status = 'login';
+    this.status = 'busy';
 
     const { email, password } = credentials;
 
@@ -26,19 +26,16 @@ export default class Authentication {
 
   @action
   handleLoginError(error) {
-    this.status = undefined;
+    this.status = 'error';
     this.loggedIn = false;
 
     var errorCode = error.code;
     var errorMessage = error.message;
-
-    console.info('LOGIN ERROR', errorCode, errorMessage);
-    console.info('STORE', this.status);
   }
 
   @action
   logout() {
-    this.status = 'logout';
+    this.status = 'busy';
 
     firebase.auth()
       .signOut()
@@ -48,17 +45,18 @@ export default class Authentication {
   }
 
   setup() {
-    console.info('SETUP');
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.user = user;
+        this.status = 'logged_in';
         this.loggedIn = true;
       } else {
+        this.status = 'not_logged_in';
         this.loggedIn = false;
       }
     });
   }
 };
 
-
+export default new Authentication();
 
