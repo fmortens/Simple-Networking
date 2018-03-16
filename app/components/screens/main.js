@@ -5,7 +5,6 @@ import {
   View,
   Button,
   SafeAreaView,
-  Modal,
   TextInput
 } from 'react-native';
 import {
@@ -13,7 +12,11 @@ import {
   inject,
   toJS
 } from 'mobx-react';
-import { MessageList } from '../../components';
+import {
+  MessageList,
+  MessageActionButtons,
+  MessageEditModal
+} from '../../components';
 
 @inject('Messages', 'Authentication')
 @observer
@@ -29,6 +32,7 @@ export default class MainScreen extends React.Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.addMessage = this.addMessage.bind(this);
+    this.changeText = this.changeText.bind(this);
   }
 
   addMessage() {
@@ -59,6 +63,10 @@ export default class MainScreen extends React.Component {
     });
   }
 
+  changeText(text) {
+    this.setState({message: text});
+  }
+
   render() {
     const {
       Messages,
@@ -68,35 +76,23 @@ export default class MainScreen extends React.Component {
     let actions;
     if (Authentication.user && Messages.messages) {
       actions = (
-        <View style={styles.actions}>
-          <Button title="Add message" onPress={this.openModal} />
-          <Button title="Log out" onPress={() => Authentication.logout()} />
-        </View>
+        <MessageActionButtons
+          style={styles.messageActionButtons}
+          openModal={this.openModal}
+          logout={Authentication.logout}
+        />
       );
     }
 
     return (
       <SafeAreaView style={styles.container}>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible} >
-          <SafeAreaView style={styles.modalView}>
-            <TextInput
-              style={styles.modalMessageInput}
-              value={this.state.message}
-              onChangeText={
-                (text) => {
-                  this.setState({message: text});
-                }
-              }
-            />
-            <View style={styles.modalActionView}>
-              <Button title="Close" onPress={this.closeModal} />
-              <Button title="Add message" onPress={this.addMessage} />
-            </View>
-          </SafeAreaView>
-        </Modal>
+        <MessageEditModal
+          modalVisible={this.state.modalVisible}
+          onChangeText={this.changeText}
+          closeModal={this.closeModal}
+          addMessage={this.addMessage}
+          message={this.state.message}
+        />
         <MessageList />
         {actions}
       </SafeAreaView>
@@ -110,15 +106,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 10
   },
   modalView: {
+    flex: 1,
     flexDirection: 'column',
-    borderWidth: 1
   },
   modalMessageInput: {
-    flex: 1
+    flex: 1,
+    margin: 10,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#ddd',
   },
-  modalActionView: {
-    flex: 1
+  messageActionButtons: {
+    flex: 1,
   }
 });
