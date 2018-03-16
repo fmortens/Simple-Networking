@@ -73,13 +73,13 @@ export default class App extends React.Component {
               style={styles.inputField}
               value={this.state.email}
               onChangeText={
-                (text) => this.setState({email: text})
+                (text) => this.setState({email: text.toLocaleLowerCase()})
               } />
             <TextInput
               style={styles.inputField}
               value={this.state.password}
               onChangeText={
-                (text) => this.setState({password: text})
+                (text) => this.setState({password: text.toLocaleLowerCase()})
               } />
             <Button title="Log in" onPress={this.authenticate} />
           </SafeAreaView>
