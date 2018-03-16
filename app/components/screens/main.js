@@ -1,6 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, SafeAreaView, Modal } from 'react-native';
-import { observer, inject, toJS } from 'mobx-react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  SafeAreaView,
+  Modal,
+  TextInput
+} from 'react-native';
+import {
+  observer,
+  inject,
+  toJS
+} from 'mobx-react';
 import { MessageList } from '../../components';
 
 @inject('Messages', 'Authentication')
@@ -10,16 +22,32 @@ export default class MainScreen extends React.Component {
     super(props);
 
     this.state = {
-      modalVisible: false
+      modalVisible: false,
+      message: undefined
     };
 
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.addMessage = this.addMessage.bind(this);
+  }
+
+  addMessage() {
+    const {
+      Messages
+    } = this.props;
+
+    const {
+      message
+    } = this.state;
+
+    if (message) {
+      Messages.addMessage(message);
+    }
+
+    this.closeModal();
   }
 
   openModal() {
-    //Messages.addMessage('wuhu')
-
     this.setState({
       modalVisible: true
     });
@@ -37,16 +65,15 @@ export default class MainScreen extends React.Component {
       Authentication
     } = this.props;
 
-    const actions = Authentication.user ? (
+    let actions;
+    if (Authentication.user && Messages.messages) {
+      actions = (
         <View style={styles.actions}>
           <Button title="Add message" onPress={this.openModal} />
           <Button title="Log out" onPress={() => Authentication.logout()} />
         </View>
-      ) : (
-        <View style={styles.actions}>
-          <Button title="Log in" onPress={() => Authentication.login({email: 'fmortens@me.com', password: 'test-user'})} />
-        </View>
       );
+    }
 
     return (
       <SafeAreaView style={styles.container}>
@@ -54,9 +81,20 @@ export default class MainScreen extends React.Component {
           animationType="slide"
           transparent={false}
           visible={this.state.modalVisible} >
-          <SafeAreaView>
-            <Button title="Close" onPress={this.closeModal} />
-            <Text>wuhu</Text>
+          <SafeAreaView style={styles.modalView}>
+            <TextInput
+              style={styles.modalMessageInput}
+              value={this.state.message}
+              onChangeText={
+                (text) => {
+                  this.setState({message: text});
+                }
+              }
+            />
+            <View style={styles.modalActionView}>
+              <Button title="Close" onPress={this.closeModal} />
+              <Button title="Add message" onPress={this.addMessage} />
+            </View>
           </SafeAreaView>
         </Modal>
         <MessageList />
@@ -73,4 +111,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  modalView: {
+    flexDirection: 'column',
+    borderWidth: 1
+  },
+  modalMessageInput: {
+    flex: 1
+  },
+  modalActionView: {
+    flex: 1
+  }
 });

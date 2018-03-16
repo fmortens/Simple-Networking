@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 
 import {
@@ -43,18 +44,31 @@ export default class MessageList extends React.Component {
       Messages
     } = this.props;
 
-    return (
-      <FlatList
-        ref="listRef"
-        data={Messages.messages}
-        renderItem={this._renderItem}
-        keyExtractor={(item, index) => {
-          return item.id;
-        }}
-        style={styles.messagesList}
-        ItemSeparatorComponent={this._renderListSeparator}
-      />
-    );
+    if (Messages.messages) {
+      return (
+        <FlatList
+          ref="listRef"
+          data={Messages.messages}
+          renderItem={this._renderItem}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+          style={styles.messagesList}
+          ItemSeparatorComponent={this._renderListSeparator}
+        />
+      );
+    } else {
+      return (
+        <View style={styles.busyView}>
+          <ActivityIndicator
+            size="large"
+            color="#000"
+            animating={true}
+          />
+          <Text>{Messages.status}</Text>
+        </View>
+      );
+    }
   }
 }
 
@@ -69,12 +83,12 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   messageListSeparator: {
-    height: 1,
+    height: 0,
     backgroundColor: colors.gray
   },
   messageView: {
     flexDirection: 'column',
-    padding: 5,
+    padding: 10,
     backgroundColor: colors.lightGray,
     borderRadius: 10,
     margin: 10
@@ -89,6 +103,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   messageBodyText: {
-    fontWeight: '400'
+    fontWeight: '400',
+    fontSize: 20
+  },
+  busyView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

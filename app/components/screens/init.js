@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-import { Login } from './';
+import { LoginScreen } from './';
 
 @inject('Authentication')
 @observer
@@ -20,7 +20,7 @@ export default class InitScreen extends React.Component {
       Authentication
     } = this.props;
 
-    let component = <Login />
+    let component = <LoginScreen />
     if (Authentication.isLoggedIn) {
       component = <MainScreen />
     } else {
@@ -32,6 +32,7 @@ export default class InitScreen extends React.Component {
               color="#000"
               animating={true}
             />
+            <Text>{Authentication.status}</Text>
           </SafeAreaView>
         );
       } else {

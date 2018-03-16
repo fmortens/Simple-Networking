@@ -1,9 +1,9 @@
 import MainScreen from './main'
-import Login from './login';
+import LoginScreen from './login';
 import InitScreen from './init';
 
 export {
-  Login,
+  LoginScreen,
   MainScreen,
   InitScreen
 };

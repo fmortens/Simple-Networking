@@ -15,7 +15,7 @@ import { StackNavigator } from "react-navigation";
 
 @inject('Authentication')
 @observer
-export default class Login extends React.Component {
+export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
 

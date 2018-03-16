@@ -5,9 +5,9 @@ import config from '../config';
 
 export default class FirebaseStore {
   @observable time;
-  @observable messages = [];
-  @observable loginStatus;
+  @observable messages;
   @observable user;
+  @observable status;
 
   @action
   addMessage(text) {
@@ -24,17 +24,21 @@ export default class FirebaseStore {
   }
 
   setupAuthenticationEvents() {
+    this.status = 'setting up';
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
+        this.status = 'auth ok, fetching data';
         this.user = user;
         this.setupFirebaseDatabase();
       } else {
+        this.status = 'authentication failed';
         this.messages = null;
       }
     });
   }
 
   setupFirebaseDatabase() {
+    this.status = 'fetching data';
     this.messageRef = firebase.database().ref(`users/${this.user.uid}/messages`);
 
     this.messageRef.on('value', snap => {
@@ -42,6 +46,7 @@ export default class FirebaseStore {
       const messages = [];
 
       if (!snapshot) {
+        this.status = 'done';
         this.messages = [];
         return;
       }
@@ -52,6 +57,7 @@ export default class FirebaseStore {
         messages.push(message);
       });
 
+      this.status = 'done';
       this.messages = messages;
     });
   }
