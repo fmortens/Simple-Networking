@@ -12,7 +12,7 @@ import {
   Authentication
 } from './app/stores';
 import { Provider } from 'mobx-react';
-import { MainScreen } from './app/components';
+import { MainScreen } from './app/components/screens';
 import {
   observer,
   inject,

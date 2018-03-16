@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, SafeAreaView, Modal } from 'react-native';
 import { observer, inject, toJS } from 'mobx-react';
-import { MessageList } from '../components';
+import { MessageList } from '../../components';
 
 @inject('Messages', 'Authentication')
 @observer
