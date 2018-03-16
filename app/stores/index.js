@@ -1,5 +1,7 @@
-import FirebaseStore from './FirebaseStore';
+import Messages from './Messages';
+import Authentication from './Authentication';
 
 export {
-  FirebaseStore
+  Messages,
+  Authentication
 }

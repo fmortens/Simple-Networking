@@ -3,7 +3,7 @@ import { observable, action, computed, toJS } from 'mobx';
 import * as firebase from 'firebase';
 import config from '../config';
 
-class FirebaseStore {
+export default class FirebaseStore {
   @observable time;
   @observable messages = [];
   @observable loginStatus;
@@ -19,39 +19,16 @@ class FirebaseStore {
     this.messageRef.push(message);
   }
 
-  @action
-  authenticate(credentials) {
-    const { email, password } = credentials;
-
-    this.loginStatus = 'Logging in...';
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .catch(function(error) {
-        this.loginStatus = JSON.stringify(error, null, 2);
-
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-      });
-  }
-
   constructor(props) {
-    // Initialize Firebase
-    firebase.initializeApp(config.firebase);
-
-    this.setupAuthentication();
+   this.setupAuthenticationEvents();
   }
 
-  setupAuthentication() {
+  setupAuthenticationEvents() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.user = user;
-        this.loginStatus = 'Logged in!';
-
         this.setupFirebaseDatabase();
       } else {
-        this.loginStatus = 'Logged out';
         this.messages = null;
       }
     });
@@ -78,17 +55,5 @@ class FirebaseStore {
       this.messages = messages;
     });
   }
-
-  @action
-  logOut() {
-    firebase.auth()
-      .signOut()
-      .catch((error) => {
-        this.loginStatus = JSON.stringify(error);
-      });
-  }
 }
 
-const firebaseStore = new FirebaseStore();
-
-export default firebaseStore;

@@ -14,21 +14,23 @@ import {
 } from 'mobx-react';
 import { Observer } from 'mobx-react/native';
 
-@inject('FirebaseStore')
+@inject('Messages')
 @observer
 export default class MessageList extends React.Component {
   _renderItem({item: message}) {
     return (
-      <Observer>{
-        () => (<View style={styles.messageView}>
-        {/* <View style={styles.messageCreatedView}>
-          <Text style={styles.messageCreatedDateText}>{new Date(message.created).toLocaleDateString("nb-NO", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Text>
-          <Text style={styles.messageCreatedTimeText}>{new Date(message.created).toLocaleTimeString('nb-NO')}</Text>
-          <Text style={styles.messageCreatedDateTimeText}>{new Date(message.created).toLocaleString()}</Text>
-        </View> */}
-        <Text style={styles.messageBodyText}>{JSON.stringify(message)}</Text>
-      </View>)
-      }</Observer>
+      <Observer>
+        { () => (
+          <View style={styles.messageView}>
+            <View style={styles.messageCreatedView}>
+              <Text style={styles.messageCreatedText}>{new Date(message.created).toLocaleString()}</Text>
+            </View>
+            <View style={styles.messageBodyView}>
+              <Text style={styles.messageBodyText}>{message.body}</Text>
+            </View>
+          </View>
+        )}
+      </Observer>
     );
   }
 
@@ -38,13 +40,13 @@ export default class MessageList extends React.Component {
 
   render() {
     const {
-      FirebaseStore
+      Messages
     } = this.props;
 
     return (
       <FlatList
         ref="listRef"
-        data={FirebaseStore.messages}
+        data={Messages.messages}
         renderItem={this._renderItem}
         keyExtractor={(item, index) => {
           return item.id;
@@ -57,33 +59,34 @@ export default class MessageList extends React.Component {
 }
 
 const colors = {
-  gray: '#aaa'
+  gray: '#aaa',
+  lightGray: '#ddd'
 };
 
 const styles = StyleSheet.create({
   messagesList: {
     flex: 1,
-    width: '100%',
-    borderWidth: 1
+    width: '100%'
   },
   messageListSeparator: {
     height: 1,
     backgroundColor: colors.gray
   },
   messageView: {
-    flexDirection: 'row'
+    flexDirection: 'column',
+    padding: 5,
+    backgroundColor: colors.lightGray,
+    borderRadius: 10,
+    margin: 10
   },
   messageCreatedView: {
-    flexDirection: 'column',
+    justifyContent: 'center'
   },
-  messageCreatedDateText: {
+  messageCreatedText: {
     fontSize: 10
   },
-  messageCreatedTimeText: {
-    fontSize: 10
-  },
-  messageCreatedDateTimeText: {
-    fontSize: 10
+  messageBodyView: {
+    justifyContent: 'center'
   },
   messageBodyText: {
     fontWeight: '400'
