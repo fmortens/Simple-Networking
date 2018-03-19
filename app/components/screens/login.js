@@ -62,8 +62,11 @@ export default class LoginScreen extends React.Component {
         </Provider>
       );
     } else {
+      const errorMessage = Authentication.status === 'error' ? 'Login failed' : '';
+
       return (
         <SafeAreaView style={styles.loginView}>
+          <Text style={styles.errorMessage}>{errorMessage}</Text>
           <TextInput
             style={styles.inputField}
             value={this.state.email}
@@ -103,5 +106,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.3)',
     backgroundColor: '#fff',
     borderRadius: 10
+  },
+  errorMessage: {
+    color: '#f00'
   }
 });

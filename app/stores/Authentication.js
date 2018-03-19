@@ -10,6 +10,8 @@ class Authentication {
   constructor(props) {
     firebase.initializeApp(config.firebase);
     this.setup();
+
+    this.handleLoginError = this.handleLoginError.bind(this);
   }
 
   @action

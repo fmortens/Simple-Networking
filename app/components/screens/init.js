@@ -19,19 +19,21 @@ export default class InitScreen extends React.Component {
       Authentication
     } = this.props;
 
-    let component = <LoginScreen />
+    let component;
     if (Authentication.isLoggedIn) {
       component = <MainScreen />
     } else {
       if (Authentication.status === 'busy') {
-        return <BusyIndicator message={Authentication.status} />
+        component = <BusyIndicator message={Authentication.status} />;
       } else {
-        return (
-          <Provider {...this.stores}>
-            {component}
-          </Provider>
-        );
+        component = <LoginScreen />
       }
     }
+
+    return (
+      <Provider {...this.stores}>
+        {component}
+      </Provider>
+    );
   }
 }
