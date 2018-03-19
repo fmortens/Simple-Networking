@@ -7,10 +7,9 @@ import {
 import {
   SafeAreaView,
   Text,
-  ActivityIndicator,
-  StyleSheet
 } from 'react-native';
 import { LoginScreen } from './';
+import { BusyIndicator } from '../../components';
 
 @inject('Authentication')
 @observer
@@ -25,16 +24,7 @@ export default class InitScreen extends React.Component {
       component = <MainScreen />
     } else {
       if (Authentication.status === 'busy') {
-        return (
-          <SafeAreaView style={styles.busyView}>
-            <ActivityIndicator
-              size="large"
-              color="#000"
-              animating={true}
-            />
-            <Text>{Authentication.status}</Text>
-          </SafeAreaView>
-        );
+        return <BusyIndicator message={Authentication.status} />
       } else {
         return (
           <Provider {...this.stores}>
@@ -45,12 +35,3 @@ export default class InitScreen extends React.Component {
     }
   }
 }
-
-const styles = StyleSheet.create({
-  busyView: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});

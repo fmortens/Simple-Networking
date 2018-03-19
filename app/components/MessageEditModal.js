@@ -22,14 +22,21 @@ export default ({
       transparent={false}
       visible={modalVisible} >
       <SafeAreaView style={styles.modalView}>
-        <TextInput
-          multiline={true}
-          style={styles.modalMessageInput}
-          value={message}
-          onChangeText={onChangeText}
-        />
-        <View style={styles.modalActionView}>
-          <Button title="Close" onPress={closeModal} />
+        <View style={styles.modalHeaderView}>
+          <Button
+            title="Close"
+            onPress={closeModal}
+          />
+        </View>
+        <View style={styles.modalBodyView}>
+          <TextInput
+            multiline={true}
+            style={styles.modalMessageInput}
+            value={message}
+            onChangeText={onChangeText}
+          />
+        </View>
+        <View style={styles.modalFooterView}>
           <Button title="Add message" onPress={addMessage} />
         </View>
       </SafeAreaView>
@@ -42,11 +49,23 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  modalMessageInput: {
+  modalHeaderView: {
+    flex: 1,
+    maxHeight: 40
+  },
+  modalBodyView: {
     flex: 1,
     margin: 10,
+  },
+  modalMessageInput: {
+    flex: 1,
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#ddd',
+  },
+  modalFooterView: {
+    flex: 1,
+    maxHeight: 40,
+    marginBottom: 20
   }
 });
