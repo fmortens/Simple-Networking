@@ -23,11 +23,7 @@ import {
 @observer
 export default class MessageList extends React.Component {
   _renderItem({item: message}) {
-    return (
-      <Observer>
-        { () => <MessageListItem message={message} /> }
-      </Observer>
-    );
+    return <MessageListItem message={message} />;
   }
 
   _renderListSeparator() {

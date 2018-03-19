@@ -3,22 +3,62 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  TouchableWithoutFeedback
 } from 'react-native';
 
-export default ({message}) => (
-  <View style={styles.messageView}>
-    <View style={styles.messageCreatedView}>
-      <Text style={styles.messageCreatedText}>{new Date(message.created).toLocaleString()}</Text>
-    </View>
-    <View style={styles.messageBodyView}>
-      <Text style={styles.messageBodyText}>{message.body}</Text>
-    </View>
-  </View>
-);
+import {
+  observer,
+  inject,
+  toJS
+} from 'mobx-react';
+
+import { Ionicons } from '@expo/vector-icons';
+
+@inject('Messages')
+@observer
+export default class MessageListItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handlePress = this.handlePress.bind(this);
+  }
+
+  handlePress() {
+    const {
+      Messages,
+      message: {
+        id
+      }
+    } = this.props;
+
+    Messages.deleteMessage(id);
+  }
+
+  render() {
+    const {
+      message
+    } = this.props;
+
+    return (
+      <View style={styles.messageView}>
+        <View style={styles.messageHeaderView}>
+          <Text style={styles.messageCreatedText}>{new Date(message.created).toLocaleString()}</Text>
+          <TouchableWithoutFeedback onPress={this.handlePress}>
+            <Ionicons color={colors.black} name={'ios-close'} size={32} />
+          </TouchableWithoutFeedback>
+        </View>
+        <View style={styles.messageBodyView}>
+          <Text style={styles.messageBodyText}>{message.body}</Text>
+        </View>
+      </View>
+    );
+  }
+};
 
 const colors = {
-  lightGray: '#ddd'
+  lightGray: '#ddd',
+  black: '#000'
 };
 
 const styles = StyleSheet.create({
@@ -29,8 +69,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10
   },
-  messageCreatedView: {
-    justifyContent: 'center'
+  messageHeaderView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   messageCreatedText: {
     fontSize: 10

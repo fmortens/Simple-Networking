@@ -19,6 +19,12 @@ export default class FirebaseStore {
     this.messageRef.push(message);
   }
 
+  @action deleteMessage(id) {
+    firebase.database()
+      .ref(`users/${this.user.uid}/messages/${id}`)
+      .remove();
+  }
+
   constructor(props) {
    this.setupAuthenticationEvents();
   }
